@@ -1,21 +1,22 @@
-## TemplateDevEnv
-_For Kotlin see [TemplateDevEnvKt](https://github.com/CleanroomMC/TemplateDevEnvKt)_
+Quantum GregTech Dynamics: A modpack about GregTech (CEu), Nuclearcraft Overhaul, QMD, Advanced Rocketry, and an entire star cluster to explore, with content planned all the way up through ultra-extreme voltage (UEV). Discover the secrets of the X0-171G star cluster as you search beyond the bounds of known physics for a way to escape the spatial anomaly that brought you here.
 
-Template workspace for modding Minecraft 1.12.2. Licensed under MIT, it is made for public use.
+**Features (Planned):**
+- A curated modded Minecraft experience that tries to mix GregTech Community Edition Unofficial, Nuclearcraft Overhauled, Quantum Minecraft Dynamics, and Advanced Rocketry into a cohesive and rewarding experience
+- Reworked GTCEu progression to provide a novel experience for new and veteran GTCEu players alike as you use space exploration and nuclear physics alongside GTCEu to expand your technological prowess
+- An entire star cluster to explore using Advanced Rocketry, with stunning planets and a variety of ways to extract their resources
+- A sprinkle of storyline and lore elements provided via a questbook using Better Questing Unofficial
+- Custom lore-related structures scattered throughout the X0-171G star cluster, powered by Recurrent Complex Volts
 
-This template runs on **Java 25**, **Gradle 9.6.1** + **[RetroFuturaGradle](https://github.com/GTNewHorizons/RetroFuturaGradle) 2.0.2** + **Forge 14.23.5.2847**.
+_Please note that this modpack is still in alpha, so some of the above features are planned but not fully implemented yet._
 
-With **coremod and mixin support** that is easy to configure.
+**Installation Methods (You only need to do one of these):**
+- Install the latest version of the modpack from Curseforge (RECOMMENDED)
+- Go to the releases in this GitHib repository, download the latest ``.zip`` file, and import it as a Cursefoge profile
 
-### Instructions:
+_This modpack is NOT maintained by the GregariousT or the GTCEu team, nor is it maintained by the developers of Nuclearcraft, Advanced Rocketry, QMD, or any other mod in this modpack. Do not contact them about issues with this modpack. If you encounter a bug, please report it as an issue to the GitHub repository for Quantum GregTech Dynamics or on the QGtD Discord server._
 
-1. Click `use this template` at the top.
-2. Clone the repository that you have created with this template to your local machine.
-3. Make sure IDEA is using Java 25 for Gradle before you sync the project. Verify this by going to IDEA's `Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM`.
-4. Open the project folder in IDEA. When prompted, click "Load Gradle Project" as it detects the `build.gradle`, if you weren't prompted, right-click the project's `build.gradle` in IDEA, select `Link Gradle Project`, after completion, hit `Refresh All` in the gradle tab on the right.
-5. Run gradle tasks such as `runClient` and `runServer` in the IDEA gradle tab, or use the auto-imported run configurations like `1. Run Client`.
+_**You MAY NOT redistribute any files from this modpack to anyone, nor may you redistribute any of the mods in this modpack. If you want to share this modpack with others, you may send them a link to this GitHub repository, the QGtD Curseforge page, or the QGtD Discord server.**_
 
-### Notes:
-- Dependencies script in [gradle/scripts/dependencies.gradle](gradle/scripts/dependencies.gradle), explanations are commented in the file.
-- Publishing script in [gradle/scripts/publishing.gradle](gradle/scripts/publishing.gradle).
-- When writing Mixins on IntelliJ, it is advisable to use latest [MinecraftDev Fork for RetroFuturaGradle](https://github.com/eigenraven/MinecraftDev/releases).
+**QGtD Curseforge Page:**  [INSERT LINK WHEN PUBLISHED]
+**QGtD GitHub Repository:** _You are here._
+**QGtD Discord Server:** https://discord.gg/zHfCjJApg8
