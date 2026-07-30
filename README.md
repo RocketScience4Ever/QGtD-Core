@@ -7,6 +7,6 @@ _This mod is NOT maintained by the GregariousT or the GTCEu team, nor is it main
 
 _**You MAY NOT redistribute any files from this mod to anyone, nor may you use it in any modpack for any reason. If you want to use this mod, just install and play QGtD. I cannot guarantee that this mod will even work outside of QGtD, since it's sole purpose is to add things that are specific to Quantum GregTech Dynamics.**_
 
-**QGtD Curseforge Page:**  [INSERT LINK WHEN PUBLISHED]
-**QGtD GitHub Repository:** _You are here._
+**QGtD Curseforge Page:**  [INSERT LINK WHEN PUBLISHED]\n
+**QGtD GitHub Repository:** _You are here._\n
 **QGtD Discord Server:** https://discord.gg/zHfCjJApg8
