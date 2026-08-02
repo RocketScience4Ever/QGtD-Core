@@ -1,0 +1,20 @@
+qgtd_core.material.rutaptu=RuTaPtU3 Alloy
+qgtd_core.material.boron_carbide=Boron Carbide
+qgtd_core.material.cobalt_orthovanadate=Cobalt Orthovanadate
+qgtd_core.material.magnetic_cobalt_orthovanadate=Magnetic Cobalt Orthovanadate
+
+tile.wire_coil.rutaptu3.name=RuTaPtU3 Coil Block
+
+qgtd_core.machine.bonsaic_facilitator.name=Bonsaic Facilitator
+qgtd_core.machine.becquerelic_accelerator.name=Becquerelic Accelerator
+qgtd_core.machine.laser_enrichment_chamber.name=Laser Enrichment Chamber
+qgtd_core.machine.celestial_artifactory.name=Celestial Artifactory
+
+qgtd.multiblock.enhancement.coil_bonus_energy=Energy Usage: %s
+qgtd.multiblock.enhancement.coil_bonus_speed=Energy usage modifier set by the coils in the structure.
+
+qgtd.multiblock.enhancement.coil_bonus_energy_hover=Processing Speed: %s
+qgtd.multiblock.enhancement.coil_bonus_speed_hover=Processing speed modifier set by the coils in the structure.
+
+qgtd.multiblock.enhancement.coil_bonus_energy_tooltip=Every coil type below %s additively incurs a %d%% increase in the energy usage of recipes performed by this machine; Every coil type above %s additively incurs a %d%% decrease in the energy usage of recipes performed by this machine
+qgtd.multiblock.enhancement.coil_bonus_speed_tooltip=Every coil type below %s additively incurs a %d%% decrease in the speed of recipes performed by this machine; Every coil type above %s additively incurs a %d%% increase in the speed of recipes performed by this machine
