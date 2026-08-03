@@ -5,11 +5,13 @@ import gregtech.api.recipes.Recipe;
 import gregtech.api.recipes.RecipeBuilder;
 import gregtech.api.recipes.RecipeMap;
 import gregtech.api.recipes.RecipeMaps;
+import gregtech.api.recipes.builders.SimpleRecipeBuilder;
 import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.ore.OrePrefix;
 
+import gregtech.common.metatileentities.multi.electric.MetaTileEntityElectricBlastFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -23,25 +25,41 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class QGtDRecipes {
-    public static void registerMaterialRecipes() {
-        Recipe activeRecipe; //Recipe object to allow modifications to existing recipes
+    public static void createNewMaterialRecipes() {
+        RecipeMaps.MIXER_RECIPES.recipeBuilder() //CV mixture recipe in HV mixer
+                .input(OreDictUnifier.get(OrePrefix.dust,Materials.Cobalt).getItem(),1)
+                .input(OreDictUnifier.get(OrePrefix.dust,Materials.Vanadium).getItem(),1)
+                .output(OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltVanadiumMixture).getItem(),2)
+                .EUt(GTValues.VA[GTValues.HV])
+                .duration(300) //15 seconds
+                .buildAndRegister();
 
-//        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.ingot,QGtDMaterials.CobaltOrthovanadate)});
-//        (new RecipeBuilder<>(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 ingot at HV+
-//
-//        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.stick,QGtDMaterials.CobaltOrthovanadate)});
-//        (new RecipeBuilder<>(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 rod at HV+
-//
-//        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.stickLong,QGtDMaterials.CobaltOrthovanadate)});
-//        (new RecipeBuilder<>(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 long rod at HV+
-
-        RecipeMaps.BLAST_RECIPES.recipeBuilder() //Create EBF recipe for CoVO4
+        RecipeMaps.BLAST_RECIPES.recipeBuilder() //CoVO4 in EV EBF (double HV hatches)
                 .input(OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltVanadiumMixture).getItem(),1)
                 .fluidInputs(Materials.Oxygen.getFluid(4000))
                 .output(OreDictUnifier.get(OrePrefix.ingotHot,QGtDMaterials.CobaltOrthovanadate).getItem(),1)
                 .EUt(GTValues.VA[GTValues.EV])
+                .duration(1300) //65 seconds
                 .blastFurnaceTemp(2400)
                 .buildAndRegister();
+    }
+
+    public static void alterMaterialRecipes() {
+        Recipe activeRecipe; //Recipe object to allow modifications to existing recipes
+
+        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.ingot,QGtDMaterials.CobaltOrthovanadate)});
+        (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 ingot at HV+
+
+        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.stick,QGtDMaterials.CobaltOrthovanadate)});
+        (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 rod at HV+
+
+        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.stickLong,QGtDMaterials.CobaltOrthovanadate)});
+        (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 long rod at HV+
+
+        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltOrthovanadate,1)});
+        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltOrthovanadate,1)},new FluidStack[]{Materials.Nitrogen.getFluid(1000)});
+        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.MagneticCobaltOrthovanadate,1)});
+        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.MagneticCobaltOrthovanadate,1)},new FluidStack[]{Materials.Nitrogen.getFluid(1000)});
     }
 
     @Nullable

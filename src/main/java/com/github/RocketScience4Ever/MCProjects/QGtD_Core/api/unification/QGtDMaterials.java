@@ -8,6 +8,7 @@ import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.material.info.MaterialFlags;
 import gregtech.api.unification.material.info.MaterialIconSet;
 import gregtech.api.unification.material.properties.BlastProperty;
+import gregtech.api.unification.material.properties.OreProperty;
 import gregtech.api.unification.material.properties.PropertyKey;
 
 public class QGtDMaterials {
@@ -26,6 +27,11 @@ public class QGtDMaterials {
     public static void flagExistingMaterials() {
         GCYMMaterials.TitaniumCarbide.addFlags(MaterialFlags.GENERATE_ROD,MaterialFlags.GENERATE_FRAME);
         Materials.Diamond.addFlags(MaterialFlags.NO_WORKING);
+    }
+
+    public static void addExistingMaterialOres() {
+        Materials.Uvarovite.setProperty(PropertyKey.ORE,new OreProperty(3,1));
+        Materials.Borax.setProperty(PropertyKey.ORE,new OreProperty(2,1));
     }
 
     public static void registerNewMaterials() {
