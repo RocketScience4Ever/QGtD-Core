@@ -6,12 +6,10 @@ import gregtech.api.recipes.RecipeBuilder;
 import gregtech.api.recipes.RecipeMap;
 import gregtech.api.recipes.RecipeMaps;
 import gregtech.api.recipes.builders.SimpleRecipeBuilder;
-import gregtech.api.recipes.ingredients.IntCircuitIngredient;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.ore.OrePrefix;
 
-import gregtech.common.metatileentities.multi.electric.MetaTileEntityElectricBlastFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,18 +24,46 @@ import java.util.function.Predicate;
 
 public class QGtDRecipes {
     public static void createNewMaterialRecipes() {
-        RecipeMaps.MIXER_RECIPES.recipeBuilder() //CV mixture recipe in HV mixer
-                .input(OreDictUnifier.get(OrePrefix.dust,Materials.Cobalt).getItem(),1)
-                .input(OreDictUnifier.get(OrePrefix.dust,Materials.Vanadium).getItem(),1)
-                .output(OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltVanadiumMixture).getItem(),2)
+        RecipeMaps.MIXER_RECIPES.recipeBuilder() //RuTaPtU3 mixture recipe in EV mixer
+                .input(OrePrefix.dust,Materials.Ruthenium,1)
+                .input(OrePrefix.dust,Materials.Tantalum,1)
+                .input(OrePrefix.dust,Materials.Platinum,1)
+                .input(OrePrefix.dust,Materials.Uranium238,3)
+                .output(OrePrefix.dust,QGtDMaterials.RuTaPtU3Alloy,6)
+                .EUt(GTValues.VA[GTValues.EV])
+                .duration(300) //15 seconds
+                .buildAndRegister();
+
+        RecipeMaps.BLAST_RECIPES.recipeBuilder() //B4C in EV EBF (double HV hatches and kanthal coils)
+                .input(OrePrefix.dust,Materials.Boron,1)
+                .input(OrePrefix.dust,Materials.Carbon,7)
+                .fluidInputs(Materials.Oxygen.getFluid(6000))
+                .output(OrePrefix.ingotHot,QGtDMaterials.BoronCarbide,1)
+                .fluidOutputs(Materials.CarbonMonoxide.getFluid(6000))
+                .EUt(GTValues.VA[GTValues.EV])
+                .duration(1200) //60 seconds
+                .blastFurnaceTemp(2700)
+                .buildAndRegister();
+
+        RecipeMaps.VACUUM_RECIPES.recipeBuilder()
+                .input(OrePrefix.ingotHot,QGtDMaterials.BoronCarbide,1)
+                .output(OrePrefix.ingot,QGtDMaterials.BoronCarbide,1)
+                .EUt(GTValues.VA[3])
+                .duration(168) //8.4 seconds
+                .buildAndRegister();
+
+        RecipeMaps.MIXER_RECIPES.recipeBuilder() //CoV mixture recipe in HV mixer
+                .input(OrePrefix.dust,Materials.Cobalt,1)
+                .input(OrePrefix.dust,Materials.Vanadium,1)
+                .output(OrePrefix.dust,QGtDMaterials.CobaltVanadiumMixture,2)
                 .EUt(GTValues.VA[GTValues.HV])
                 .duration(300) //15 seconds
                 .buildAndRegister();
 
-        RecipeMaps.BLAST_RECIPES.recipeBuilder() //CoVO4 in EV EBF (double HV hatches)
-                .input(OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltVanadiumMixture).getItem(),1)
+        RecipeMaps.BLAST_RECIPES.recipeBuilder() //CoVO4 in EV EBF (double HV hatches and kanthal coils)
+                .input(OrePrefix.dust,QGtDMaterials.CobaltVanadiumMixture,1)
                 .fluidInputs(Materials.Oxygen.getFluid(4000))
-                .output(OreDictUnifier.get(OrePrefix.ingotHot,QGtDMaterials.CobaltOrthovanadate).getItem(),1)
+                .output(OrePrefix.ingotHot,QGtDMaterials.CobaltOrthovanadate,1)
                 .EUt(GTValues.VA[GTValues.EV])
                 .duration(1300) //65 seconds
                 .blastFurnaceTemp(2400)
@@ -45,6 +71,7 @@ public class QGtDRecipes {
     }
 
     public static void alterMaterialRecipes() {
+        //MAKE SURE TO INCLUDE THE CIRCUIT ITEM TO FIND RECIPES WITH PROGRAMMED CIRCUITS
         Recipe activeRecipe; //Recipe object to allow modifications to existing recipes
 
         activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.ingot,QGtDMaterials.CobaltOrthovanadate)});
@@ -56,10 +83,8 @@ public class QGtDRecipes {
         activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.stickLong,QGtDMaterials.CobaltOrthovanadate)});
         (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 long rod at HV+
 
-        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltOrthovanadate,1)});
-        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.CobaltOrthovanadate,1)},new FluidStack[]{Materials.Nitrogen.getFluid(1000)});
-        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.MagneticCobaltOrthovanadate,1)});
-        QGtDRecipes.removeRecipeFromMachine(RecipeMaps.BLAST_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.dust,QGtDMaterials.MagneticCobaltOrthovanadate,1)},new FluidStack[]{Materials.Nitrogen.getFluid(1000)});
+        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.VACUUM_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.ingotHot,QGtDMaterials.RuTaPtU3Alloy)});
+        (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.VACUUM_RECIPES)).duration(250).buildAndRegister(); //change duration of RuTaPtU3 vacuum freeze to 12.5 seconds to match RTM from vanilla GTCEu
     }
 
     @Nullable
@@ -145,14 +170,5 @@ public class QGtDRecipes {
     @NotNull
     public static Predicate<Recipe> atVoltage(@MagicConstant(flags = {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV, GTValues.UEV, GTValues.UIV, GTValues.UXV, GTValues.OpV, GTValues.MAX}) int voltageIndex) {
         return (Recipe r) -> QGtDRecipes.atVoltage(r,voltageIndex);
-    }
-
-    public static boolean withCircuit(@NotNull Recipe recipe, int circuit) {
-        return recipe.getInputs().contains(IntCircuitIngredient.circuitInput(circuit));
-    }
-
-    @NotNull
-    public static Predicate<Recipe> withCircuit(int circuit) {
-        return (Recipe r) -> QGtDRecipes.withCircuit(r,circuit);
     }
 }

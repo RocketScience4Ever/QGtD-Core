@@ -13,11 +13,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "qgtd_core", name = "QGtD Core", version = "0.1.0", dependencies = "required-after:gregtech@[2.8.10-beta,);required-after:gcym@[1.2.11,);") //required:mixinbooter@[11.12,);
+@Mod(modid = "qgtd_core", name = "QGtD Core", version = "0.1.0", dependencies = "required:gregtech@[2.8.10-beta,);required:gcym@[1.2.11,);") //required:mixinbooter@[11.12,);
 @Mod.EventBusSubscriber(modid = Tags.MOD_ID)
 public class QGtDCore {
     @SubscribeEvent(priority = EventPriority.HIGH)
