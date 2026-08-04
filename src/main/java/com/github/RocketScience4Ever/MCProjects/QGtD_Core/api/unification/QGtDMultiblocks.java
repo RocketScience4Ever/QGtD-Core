@@ -7,8 +7,6 @@ import com.github.RocketScience4Ever.MCProjects.QGtD_Core.metatileentities.multi
 
 import gregtech.common.metatileentities.MetaTileEntities;
 
-import net.minecraft.util.ResourceLocation;
-
 public class QGtDMultiblocks {
     private static int NEXT_ID;
 
@@ -16,6 +14,8 @@ public class QGtDMultiblocks {
         return NEXT_ID++;
     }
 
+    /**Registers QGtD multiblocks to be able to form using GTCEu's multiblock logic.
+     */
     public static void registerMetaTileEntities() {
         QGtDMultiblocks.NEXT_ID = 30000;
 

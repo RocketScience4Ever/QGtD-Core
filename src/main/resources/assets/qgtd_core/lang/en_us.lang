@@ -1,10 +1,10 @@
-qgtd_core.material.rutaptu=RuTaPtU3 Alloy
+qgtd_core.material.rutaptu_alloy=RuTaPtU Alloy
 qgtd_core.material.boron_carbide=Boron Carbide
 qgtd_core.material.cobalt_vanadium_mixture=Cobalt Vanadium Mixture
 qgtd_core.material.cobalt_orthovanadate=Cobalt Orthovanadate
 qgtd_core.material.magnetic_cobalt_orthovanadate=Magnetic Cobalt Orthovanadate
 
-tile.wire_coil.rutaptu3.name=RuTaPtU3 Coil Block
+tile.wire_coil.rutaptu_alloy.name=RuTaPtU Alloy Coil Block
 
 qgtd_core.machine.bonsaic_facilitator.name=Bonsaic Facilitator
 qgtd_core.machine.becquerelic_accelerator.name=Becquerelic Accelerator

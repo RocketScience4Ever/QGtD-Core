@@ -31,7 +31,7 @@ public abstract class CoilEnhancedRecipeMapMultiblockController extends Enhanced
             "gregtech.material.cupronickel",
             "gregtech.material.kanthal",
             "gregtech.material.nichrome",
-            "qgtd.material.rhtaptu3",
+            "qgtd.material.rhtaptu",
             "gregtech.material.hssg",
             "gregtech.material.naquadah",
             "gregtech.material.trinium",

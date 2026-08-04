@@ -2,7 +2,6 @@ package com.github.RocketScience4Ever.MCProjects.QGtD_Core.api.unification;
 
 import gregtech.api.GTValues;
 import gregtech.api.recipes.Recipe;
-import gregtech.api.recipes.RecipeBuilder;
 import gregtech.api.recipes.RecipeMap;
 import gregtech.api.recipes.RecipeMaps;
 import gregtech.api.recipes.builders.SimpleRecipeBuilder;
@@ -10,8 +9,12 @@ import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.material.Materials;
 import gregtech.api.unification.ore.OrePrefix;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
@@ -23,15 +26,27 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class QGtDRecipes {
+    /**Creates QGtD material-related recipes which do not rely on the GTCEu recipe maps being populated.
+     * This method is called during the {@link RegistryEvent} for recipes.
+     */
     public static void createNewMaterialRecipes() {
-        RecipeMaps.MIXER_RECIPES.recipeBuilder() //RuTaPtU3 mixture recipe in EV mixer
+        RecipeMaps.MIXER_RECIPES.recipeBuilder() //RuTaPtU mixture recipe in EV mixer
                 .input(OrePrefix.dust,Materials.Ruthenium,1)
                 .input(OrePrefix.dust,Materials.Tantalum,1)
                 .input(OrePrefix.dust,Materials.Platinum,1)
                 .input(OrePrefix.dust,Materials.Uranium238,3)
-                .output(OrePrefix.dust,QGtDMaterials.RuTaPtU3Alloy,6)
+                .output(OrePrefix.dust,QGtDMaterials.RuTaPtUAlloy,6)
                 .EUt(GTValues.VA[GTValues.EV])
                 .duration(300) //15 seconds
+                .buildAndRegister();
+
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder() //RuTaPtU coils
+                .input(OrePrefix.wireGtDouble,QGtDMaterials.RuTaPtUAlloy,8)
+                .input(OrePrefix.foil,Materials.VanadiumSteel,8)
+                .fluidInputs(Materials.Nichrome.getFluid(144))
+                .output(Item.getByNameOrId("qgtd_core:machine_coil"),1)
+                .EUt(GTValues.VA[GTValues.EV])
+                .duration(500) //25 seconds
                 .buildAndRegister();
 
         RecipeMaps.BLAST_RECIPES.recipeBuilder() //B4C in EV EBF (double HV hatches and kanthal coils)
@@ -70,6 +85,9 @@ public class QGtDRecipes {
                 .buildAndRegister();
     }
 
+    /**Alters GTCEu's auto-generated recipes for materials created by QGtD.
+     * This method must run during the {@link FMLInitializationEvent} phase to ensure that the GTCEu recipe maps are populated to avoid {@link NullPointerException}.
+     */
     public static void alterMaterialRecipes() {
         //MAKE SURE TO INCLUDE THE CIRCUIT ITEM TO FIND RECIPES WITH PROGRAMMED CIRCUITS
         Recipe activeRecipe; //Recipe object to allow modifications to existing recipes
@@ -83,22 +101,44 @@ public class QGtDRecipes {
         activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.POLARIZER_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.stickLong,QGtDMaterials.CobaltOrthovanadate)});
         (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.POLARIZER_RECIPES)).EUt(GTValues.VA[GTValues.HV]).buildAndRegister(); //Polarize CoVO4 long rod at HV+
 
-        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.VACUUM_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.ingotHot,QGtDMaterials.RuTaPtU3Alloy)});
+        activeRecipe = QGtDRecipes.removeRecipeFromMachine(RecipeMaps.VACUUM_RECIPES,new ItemStack[]{OreDictUnifier.get(OrePrefix.ingotHot,QGtDMaterials.RuTaPtUAlloy)});
         (new SimpleRecipeBuilder(activeRecipe,RecipeMaps.VACUUM_RECIPES)).duration(250).buildAndRegister(); //change duration of RuTaPtU3 vacuum freeze to 12.5 seconds to match RTM from vanilla GTCEu
     }
 
+    /**Searches for a recipe in the specified {@code machineRecipeMap} using the specified {@code itemInputs} (assumes that there are no fluid inputs),
+     * then removes and returns the target recipe from the {@code machineRecipeMap} if it was successfully found.
+     * <p><b>THIS METHOD WILL FAIL TO FIND RECIPES IF CALLED BEFORE THE {@link RegistryEvent} FOR RECIPES HAS COMPLETED.</b></p>
+     * @param machineRecipeMap (RecipeMap&lt;?&gt;) The {@link RecipeMap} for the machine which performs the recipe to remove
+     * @param itemInputs (ItemStack[]) An array of {@link ItemStack} containing the item inputs for the target recipe. THE PROGRAMMED CIRCUIT MUST BE IN THIS ARRAY IF THE TARGET RECIPE USES GTCEu's CIRCUIT SYSTEM
+     * @return (Recipe) A reference to the {@link Recipe} which was removed by this method, or {@code null} if the target recipe was not found in the {@code machineRecipeMap}
+     */
     @Nullable
-    public static <B extends RecipeBuilder<B>> Recipe removeRecipeFromMachine(@NotNull RecipeMap<B> machineRecipeMap, ItemStack[] itemInputs) {
+    public static Recipe removeRecipeFromMachine(@NotNull RecipeMap<?> machineRecipeMap, ItemStack[] itemInputs) {
         return QGtDRecipes.removeRecipeFromMachine(machineRecipeMap,itemInputs,new FluidStack[0]);
     }
 
+    /**Searches for a recipe in the specified {@code machineRecipeMap} using the specified {@code fluidInputs} (assumes that there are no item inputs),
+     * then removes and returns the target recipe from the {@code machineRecipeMap} if it was successfully found.
+     * <p><b>THIS METHOD WILL FAIL TO FIND RECIPES IF CALLED BEFORE THE {@link RegistryEvent} FOR RECIPES HAS COMPLETED.</b></p>
+     * @param machineRecipeMap (RecipeMap&lt;?&gt;) The {@link RecipeMap} for the machine which performs the recipe to remove
+     * @param fluidInputs (FluidStack[]) An array of {@link FluidStack} containing the fluid inputs for the target recipe
+     * @return (Recipe) A reference to the {@link Recipe} which was removed by this method, or {@code null} if the target recipe was not found in the {@code machineRecipeMap}
+     */
     @Nullable
-    public static <B extends RecipeBuilder<B>> Recipe removeRecipeFromMachine(@NotNull RecipeMap<B> machineRecipeMap, FluidStack[] fluidInputs) {
+    public static Recipe removeRecipeFromMachine(@NotNull RecipeMap<?> machineRecipeMap, FluidStack[] fluidInputs) {
         return QGtDRecipes.removeRecipeFromMachine(machineRecipeMap,new ItemStack[0],fluidInputs);
     }
 
+    /**Searches for a recipe in the specified {@code machineRecipeMap} using the specified {@code itemInputs} and {@code fluidInputs},
+     * then removes and returns the target recipe from the {@code machineRecipeMap} if it was successfully found.
+     * <p><b>THIS METHOD WILL FAIL TO FIND RECIPES IF CALLED BEFORE THE {@link RegistryEvent} FOR RECIPES HAS COMPLETED.</b></p>
+     * @param machineRecipeMap (RecipeMap&lt;?&gt;) The {@link RecipeMap} for the machine which performs the recipe to remove
+     * @param itemInputs (ItemStack[]) An array of {@link ItemStack} containing the item inputs for the target recipe. THE PROGRAMMED CIRCUIT MUST BE IN THIS ARRAY IF THE TARGET RECIPE USES GTCEu's CIRCUIT SYSTEM
+     * @param fluidInputs (FluidStack[]) An array of {@link FluidStack} containing the fluid inputs for the target recipe
+     * @return (Recipe) A reference to the {@link Recipe} which was removed by this method, or {@code null} if the target recipe was not found in the {@code machineRecipeMap}
+     */
     @Nullable
-    public static <B extends RecipeBuilder<B>> Recipe removeRecipeFromMachine(@NotNull RecipeMap<B> machineRecipeMap, ItemStack[] itemInputs, FluidStack[] fluidInputs) {
+    public static Recipe removeRecipeFromMachine(@NotNull RecipeMap<?> machineRecipeMap, ItemStack[] itemInputs, FluidStack[] fluidInputs) {
         ArrayList<ItemStack> itemsInList = new ArrayList<>();
         if (itemInputs != null) {
             Collections.addAll(itemsInList, itemInputs);
@@ -119,18 +159,46 @@ public class QGtDRecipes {
         return null;
     }
 
+    /**Searches for a recipe in the specified {@code machineRecipeMap} using the specified {@code itemInputs} (assumes that there are no fluid inputs),
+     * then removes and returns the target recipe from the {@code machineRecipeMap} if it was successfully found AND the specified {@code selectionPredicate} returns {@code true}.
+     * <p>This method will only remove the FIRST recipe in the {@code machineRecipeMap} which makes the {@code selectionPredicate} {@code true}</p>
+     * <p><b>THIS METHOD WILL FAIL TO FIND RECIPES IF CALLED BEFORE THE {@link RegistryEvent} FOR RECIPES HAS COMPLETED.</b></p>
+     * @param machineRecipeMap (RecipeMap&lt;?&gt;) The {@link RecipeMap} for the machine which performs the recipe to remove
+     * @param itemInputs (ItemStack[]) An array of {@link ItemStack} containing the item inputs for the target recipe. THE PROGRAMMED CIRCUIT MUST BE IN THIS ARRAY IF THE TARGET RECIPE USES GTCEu's CIRCUIT SYSTEM
+     * @param selectionPredicate (Predicate&lt;Recipe&gt;) A {@link Predicate} which takes in a {@link Recipe} and returns {@code true} ONLY for recipes which should be removed by this method call
+     * @return (Recipe) A reference to the {@link Recipe} which was removed by this method, or {@code null} if the target recipe was not found in the {@code machineRecipeMap}
+     */
     @Nullable
-    public static <B extends RecipeBuilder<B>> Recipe removeRecipeFromMachine(@NotNull RecipeMap<B> machineRecipeMap, ItemStack[] itemInputs, @NotNull Predicate<Recipe> selectionPredicate) {
+    public static Recipe removeRecipeFromMachine(@NotNull RecipeMap<?> machineRecipeMap, ItemStack[] itemInputs, @NotNull Predicate<Recipe> selectionPredicate) {
         return QGtDRecipes.removeRecipeFromMachine(machineRecipeMap,itemInputs,new FluidStack[0],selectionPredicate);
     }
 
+    /**Searches for a recipe in the specified {@code machineRecipeMap} using the specified {@code fluidInputs} (assumes that there are no item inputs),
+     * then removes and returns the target recipe from the {@code machineRecipeMap} if it was successfully found AND the specified {@code selectionPredicate} returns {@code true}.
+     * <p>This method will only remove the FIRST recipe in the {@code machineRecipeMap} which makes the {@code selectionPredicate} {@code true}</p>
+     * <p><b>THIS METHOD WILL FAIL TO FIND RECIPES IF CALLED BEFORE THE {@link RegistryEvent} FOR RECIPES HAS COMPLETED.</b></p>
+     * @param machineRecipeMap (RecipeMap&lt;?&gt;) The {@link RecipeMap} for the machine which performs the recipe to remove
+     * @param fluidInputs (FluidStack[]) An array of {@link FluidStack} containing the fluid inputs for the target recipe
+     * @param selectionPredicate (Predicate&lt;Recipe&gt;) A {@link Predicate} which takes in a {@link Recipe} and returns {@code true} ONLY for recipes which should be removed by this method call
+     * @return (Recipe) A reference to the {@link Recipe} which was removed by this method, or {@code null} if the target recipe was not found in the {@code machineRecipeMap}
+     */
     @Nullable
-    public static <B extends RecipeBuilder<B>> Recipe removeRecipeFromMachine(@NotNull RecipeMap<B> machineRecipeMap, FluidStack[] fluidInputs, @NotNull Predicate<Recipe> selectionPredicate) {
+    public static Recipe removeRecipeFromMachine(@NotNull RecipeMap<?> machineRecipeMap, FluidStack[] fluidInputs, @NotNull Predicate<Recipe> selectionPredicate) {
         return QGtDRecipes.removeRecipeFromMachine(machineRecipeMap,new ItemStack[0],fluidInputs,selectionPredicate);
     }
 
+    /**Searches for a recipe in the specified {@code machineRecipeMap} using the specified {@code itemInputs} and {@code fluidInputs},
+     * then removes and returns the target recipe from the {@code machineRecipeMap} if it was successfully found AND the specified {@code selectionPredicate} returns {@code true}.
+     * <p>This method will only remove the FIRST recipe in the {@code machineRecipeMap} which makes the {@code selectionPredicate} {@code true}</p>
+     * <p><b>THIS METHOD WILL FAIL TO FIND RECIPES IF CALLED BEFORE THE {@link RegistryEvent} FOR RECIPES HAS COMPLETED.</b></p>
+     * @param machineRecipeMap (RecipeMap&lt;?&gt;) The {@link RecipeMap} for the machine which performs the recipe to remove
+     * @param itemInputs (ItemStack[]) An array of {@link ItemStack} containing the item inputs for the target recipe. THE PROGRAMMED CIRCUIT MUST BE IN THIS ARRAY IF THE TARGET RECIPE USES GTCEu's CIRCUIT SYSTEM
+     * @param fluidInputs (FluidStack[]) An array of {@link FluidStack} containing the fluid inputs for the target recipe
+     * @param selectionPredicate (Predicate&lt;Recipe&gt;) A {@link Predicate} which takes in a {@link Recipe} and returns {@code true} ONLY for recipes which should be removed by this method call
+     * @return (Recipe) A reference to the {@link Recipe} which was removed by this method, or {@code null} if the target recipe was not found in the {@code machineRecipeMap}
+     */
     @Nullable
-    public static <B extends RecipeBuilder<B>> Recipe removeRecipeFromMachine(@NotNull RecipeMap<B> machineRecipeMap, @Nullable ItemStack[] itemInputs, @Nullable FluidStack[] fluidInputs, @NotNull Predicate<Recipe> selectionPredicate) {
+    public static Recipe removeRecipeFromMachine(@NotNull RecipeMap<?> machineRecipeMap, @Nullable ItemStack[] itemInputs, @Nullable FluidStack[] fluidInputs, @NotNull Predicate<Recipe> selectionPredicate) {
         ArrayList<ItemStack> itemsInList = new ArrayList<>();
         if (itemInputs != null) {
             Collections.addAll(itemsInList, itemInputs);

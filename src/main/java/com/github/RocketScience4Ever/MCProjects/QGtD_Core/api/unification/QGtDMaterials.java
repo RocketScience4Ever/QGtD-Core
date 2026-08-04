@@ -14,7 +14,7 @@ import gregtech.api.unification.material.properties.PropertyKey;
 public class QGtDMaterials {
     private static int NEXT_ID;
 
-    public static Material RuTaPtU3Alloy;
+    public static Material RuTaPtUAlloy;
     public static Material BoronCarbide;
     public static Material CobaltVanadiumMixture;
     public static Material CobaltOrthovanadate;
@@ -38,7 +38,7 @@ public class QGtDMaterials {
         QGtDMaterials.NEXT_ID = 31000; //Start QGtD material ids at 31000
 
         //RuTaPtU3
-        RuTaPtU3Alloy = (new Material.Builder(QGtDMaterials.nextMaterialID(),QGtDUtils.createQGtDId("rutaptu_alloy")))
+        RuTaPtUAlloy = (new Material.Builder(QGtDMaterials.nextMaterialID(),QGtDUtils.createQGtDId("rutaptu_alloy")))
                 .ingot().fluid().color(7465205).iconSet(MaterialIconSet.METALLIC)
                 .components(Materials.Ruthenium,1,Materials.Tantalum,1,Materials.Platinum,1,Materials.Uranium238,3)
                 .blast((BlastProperty.Builder blastBuilder) -> blastBuilder.temp(3000,BlastProperty.GasTier.LOW).blastStats(GTValues.VA[4],1400).vacuumStats(GTValues.VA[3]))
