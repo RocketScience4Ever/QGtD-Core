@@ -39,6 +39,7 @@ dependencies {
     // Include OSXNarratorBlocker by default for the dev env, for M1+ Macs
     runtimeOnly 'com.cleanroommc:osxnarratorblocker:1.0'
 
+    implementation rfg.deobf("curse.maven:codechicken-lib-1-8-242818:2779848") //Code Chicken Lib (as dependency for GTCEu
     implementation rfg.deobf("curse.maven:gregtech-ce-unofficial-557242:5519022") //GregTech CEu
     implementation rfg.deobf("curse.maven:gregicality-multiblocks-564858:5619513") //Gregicality
 
