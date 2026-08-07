@@ -1,0 +1,13 @@
+{
+    "ctm": {
+        "ctm_version": 1,
+        "type": "CTM",
+        "layer": "SOLID",
+        "textures": [
+            "qgtd_core:blocks/coils/wire_coil_rutaptu_alloy_ctm"
+        ],
+        "extra": {
+            "connect_inside": true
+        }
+    }
+}
