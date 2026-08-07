@@ -18,7 +18,7 @@ public class QGtDHeatingCoils {
     public static void onPreInit(FMLPreInitializationEvent event) {
         SAMPLE_GTCEU_COIL = new BlockWireCoil(); //Create a sample of a BlockWireCoil for alteration of GTCEu's existing coils
         SAMPLE_QGTD_COIL = new QGtDWireCoil(); //Create a sample of a QGtDWireCoil for registry purposes
-        SAMPLE_QGTD_COIL.setRegistryName("machine_coil"); //Registry name for QGtD coil blocks and items
+        SAMPLE_QGTD_COIL.setRegistryName("wire_coil"); //Registry name for QGtD coil blocks and items
     }
 
     /**Registers all coils in {@link QGtDWireCoil.QGtDCoilType} to GTCEu's mapping for EBF coils.
